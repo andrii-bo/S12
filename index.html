@@ -1,21 +1,621 @@
-<!DOCTYPE html>
-<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Вимірювання передачі антен (S21/S12)</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f7f8;color:#23313d;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.65}.guide{max-width:1120px;margin:auto;padding:24px}section{background:white;margin:0 0 24px;padding:40px;border:1px solid #dbe7eb;border-radius:8px}h2{font-size:30px;line-height:1.25;margin:0 0 26px;font-weight:700;letter-spacing:-.6px}section:first-child h2{font-size:44px;max-width:800px}h3{font-size:20px;line-height:1.4;margin:0 0 12px}p{margin:0 0 16px}img{display:block;width:100%;height:auto;border-radius:4px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}.note{background:#f0fafb;border:1px solid #bae4e9;border-left:5px solid #28b7c8;padding:20px;margin:20px 0}.warning{background:#fff7ed;border-color:#f0caa5;border-left-color:#dc792e}.warning strong,.warning h3{color:#a54a10}.card{border:1px solid #d1dde4;background:#f7fafc;padding:20px;margin-bottom:20px}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:16px}.flow .card{border-top:4px solid #28b7c8}.formula{font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:1.9;overflow-wrap:anywhere}.emphasis{text-align:center;margin:25px 0;font-weight:bold}mark{background:#b5f0f2;color:inherit;padding:4px 12px}li{margin:0 0 12px}ol,ul{padding-left:25px;margin-top:0}code,pre{font-family:Consolas,monospace}code{font-size:13px;overflow-wrap:anywhere}pre{font-size:12px;line-height:1.8;background:#f4f7f8;padding:15px;overflow:auto}.table-wrap{overflow:auto;margin:24px 0}table{width:100%;border-collapse:collapse;font-size:15px}th,td{padding:14px;text-align:left;border:1px solid #d0dce2}th{background:#1c354d;color:white}td{vertical-align:top}.checklist td:first-child{background:#fff0ef}.checklist td:last-child{background:#e9f9fa}.credit{text-align:right;color:#7c8991;font-size:10px;margin-top:20px}@media(max-width:700px){.guide{padding:10px}section{padding:22px 18px;margin-bottom:14px}h2{font-size:25px}section:first-child h2{font-size:32px}.grid{grid-template-columns:1fr;gap:12px}.formula{font-size:18px}body{font-size:16px}.checklist{min-width:520px}}@media print{body{background:white}.guide{padding:0;max-width:none}section{break-inside:avoid;border-radius:0}.credit{color:#666}}
-</style></head><body>
-<main class="guide">
-<section id="section-1"><h2>Вимірювання передачі антен (S21/S12)</h2><div class="grid"><div><p>Практичний посібник для технічних спеціалістів з використанням LiteVNA та Windows</p><p><code>[ WORKED_EXAMPLE: 5.8 GHz ] | [ REVISION 3 ]</code></p></div><div><img src="images/cover.jpg" alt="" loading="lazy"></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-2"><h2>Що ми вимірюємо (і обмеження LiteVNA)</h2><div class="grid"><div><img src="images/forward.jpg" alt="" loading="lazy"></div><div><img src="images/reverse.jpg" alt="" loading="lazy"></div></div><div class="note"><strong>Концепція:</strong> S21 показує передачу всього радіоканалу у вибраному напрямку, а не абсолютну ефективність антени.<p><span class="formula">S21 (dB) = 20 log<sub>10</sub>|S21|.</span></p></div><div class="note warning"><strong>Апаратне обмеження:</strong> LiteVNA має лише один змішувач (Mixer) і не підтримує пряме цифрове вимірювання S12. Щоб виміряти передачу у зворотному напрямку, необхідно фізично поміняти антени місцями.</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-3"><h2>Апаратне забезпечення та безпека</h2><img src="images/equipment.jpg" alt="" loading="lazy"><div class="grid"><div><div class="card"><h3>□ Обладнання:</h3><ul><li>Ноутбук (Windows 11)</li><li>LiteVNA та USB-кабель</li><li>Неметалеві стійки та рулетка</li></ul><h3>□ ВЧ-компоненти:</h3><ul><li>Антени (напр., 5.8 GHz)</li><li>Два 50 Ω кабелі</li><li>Набір O-S-L та адаптер THRU</li></ul></div></div><div><div class="note warning"><h3>КРИТИЧНО ДЛЯ БЕЗПЕКИ:</h3><p><strong>НІКОЛИ</strong> не підключайте працюючий передавач або підсилювач до LiteVNA. Тільки <strong>пасивні антени.</strong> Уважно перевіряйте роз’єми (SMA vs RP-SMA). Різьба та центральний контакт повинні збігатися.</p></div></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-4"><h2>Підключення до Windows: NanoVNA App</h2><div class="grid"><div><img src="images/app.jpg" alt="" loading="lazy"></div><div><ol><li>COM Port: Знайдіть порт USB CDC та натисніть Connect. Якщо порт зайнятий, закрийте інші програми.</li><li>Sweep Range: Введіть значення Start та Stop навколо робочої частоти.</li><li>Trace Selection: Виберіть графік S21 LogMag для передачі та S11 LogMag для відображення.</li><li>Calibration: Розташування меню калібрування (використовуйте тільки після налаштування діапазону).</li></ol></div></div><div class="note">Порада: Не замінюйте драйвер USB Serial CDC на WinUSB наосліп у Windows 11.</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-5"><h2>Налаштування розгортки (Sweep) та крок частоти</h2><div class="flow"><div class="card"><h3>Вхідні дані:</h3><p>Start: 5.5 GHz | Stop: 6.1 GHz | Points: 201</p></div><div class="card"><h3>Математична обробка</h3></div><div class="card"><h3>Результат</h3><p>Крок Δf = 3 MHz</p></div></div><div class="card"><h3>Інженерна математика</h3><div class="formula">Δf = (fStop - fStart) / (N - 1)<br>Δf = (6100 - 5500) / (201 - 1)<br>Δf = 3 MHz</div></div><div class="grid"><div><p><strong>Діапазон:</strong> Встановіть розгортку навколо робочої частоти (напр., 5.8 GHz). Більша кількість точок зменшує крок, але не гарантує кращої загальної точності.</p></div><div><p><strong>Усереднення (Averaging):</strong> Використовуйте 4–8 циклів усереднення для зменшення випадкових шумів. <strong>Увага:</strong> це не усуває статичні відбиття від стін чи підлоги.</p></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-6"><h2>Логіка калібрування: Уникнення подвійної корекції</h2><div class="grid"><div><div class="card"><h3>НЕПРАВИЛЬНО</h3><img src="images/wrong.jpg" alt="" loading="lazy"><p><strong>Апаратне калібрування:</strong> Дійсне лише для автономного використання приладу без ПК.</p></div></div><div><div class="card"><h3>ПРАВИЛЬНО</h3><img src="images/right.jpg" alt="" loading="lazy"><p><strong>Програмне калібрування (PC Workflow):</strong> Програма керує вимірюванням і зберігає власну корекцію.</p></div></div></div><div class="note warning"><strong>ЗОЛОТЕ ПРАВИЛО:</strong> Не застосовуйте <strong>корекцію двічі!</strong> Перед калібруванням у Windows App обов’язково скиньте апаратне калібрування на самому LiteVNA (CAL -&gt; RESET).</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-7"><h2>Покрокове калібрування кабелів (O-S-L-I-T)</h2><div class="grid"><div><img src="images/calibration.jpg" alt="" loading="lazy"></div><div><ol><li><strong>OPEN, SHORT, LOAD:</strong> Підключіть стандарти по черзі до кінця кабелю PORT 1 (TX).</li><li><strong>ISOLN:</strong> Підключіть 50 Ω навантаження до обох кабелів окремо. Не з’єднуйте їх!</li><li><strong>THRU:</strong> З’єднайте обидва кінці кабелів за допомогою короткого адаптера.</li></ol><div class="note warning"><h3>Валідація після калібрування:</h3><ul><li>Графік THRU (S21) має бути близько 0 dB (±0.5 dB).</li><li>Графік LOAD (S11) має бути &lt;-20 dB на робочій частоті.</li></ul></div></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-8"><h2>Фізичне розміщення та 'Дальня зона' (Far-Field)</h2><div class="grid"><div><img src="images/placement.jpg" alt="" loading="lazy"></div><div><p><strong>Вирівнювання:</strong><br>Спрямуйте відкритий кінець Helix у центр Cloverleaf. Вирівняйте поляризацію та звільніть зону Френеля від людей та металу.</p><div class="card"><h3>Engineer's Math</h3><div class="formula">λ = c / f = 299792458 / (5.8 × 10<sup>9</sup>) = 0.0516 m</div><p>Оцінка: <span class="formula">R ≥ 2D<sup>2</sup> / λ</span></p><p>Якщо D = 0.18 m (максимальний розмір антени):</p><div class="formula">R ≥ 2(0.18)<sup>2</sup> / 0.0516 ≈ 1.25 m</div></div></div></div><div class="note warning"><strong>Примітка:</strong> Початкова відстань 2.0 м задовольняє умову R &gt; 1.25 м. Це гарантує планарність хвилі, але НЕ усуває фізичні відбиття від стін.</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-9"><h2>Виконання вимірювання</h2><div class="flow"><div class="card"><h3>1. Connect</h3><p>Підключіть PORT 1 до передавальної антени, PORT 2 до приймальної.</p></div><div class="card"><h3>2. Live Sweep</h3><p>Запустіть безперервну розгортку. Знайдіть максимум S21 за допомогою мікро-налаштувань кута антени.</p></div><div class="card"><h3>3. Lock &amp; Clear</h3><p>Зафіксуйте стійки.</p><p><strong>ВІДІЙДІТЬ від зони вимірювання. Ваше тіло критично впливає на S21.</strong></p></div><div class="card"><h3>4. Record</h3><p>Запишіть значення S21 та S11 на 5.8 GHz. Збережіть графік.</p></div></div><div class="note"><strong>Відтворюваність:</strong> Зробіть щонайменше 3 проходи без змін. Потім зніміть і встановіть антену знову, щоб перевірити точність механічного кріплення.</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-10"><h2>Перевірка фону (Background Reality Check)</h2><img src="images/background.jpg" alt="" loading="lazy"><div class="formula emphasis">S21 (Signal) - S21 (Background) = Margin (Запас)<br><mark>Target ≥ 20 dB</mark></div><div class="grid"><div><p><strong>Мета:</strong> Визначає, наскільки сигнал перевищує рівень шуму приладу та небажаних витоків.</p><p><strong>Приклад:</strong> Сигнал -38 dB, Фон -65 dB = Запас 27 dB.</p></div><div><div class="note warning"><strong>КРИТИЧНО: НІКОЛИ не віднімайте значення фону (в dB) від вашого вимірювання як математичну корекцію! Цей тест використовується виключно для перевірки достатності запасу сигналу.</strong></div></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-11"><h2>Діагностика середовища: Багатопроменеве поширення</h2><div class="grid"><div><img src="images/multipath.jpg" alt="" loading="lazy"></div><div><h3>Математика зсуву відстані:</h3><div class="formula">ΔS = −20 log<sub>10</sub>(r<sub>2</sub> / r<sub>1</sub>)</div><ul><li><strong>Приклад:</strong> Відносно 2.0 м очікуйте зміну +0.92 dB на відстані 1.8 м, та -0.83 dB на відстані 2.2 м.</li></ul><h3>Мікро-зсуви (Діагностика фази):</h3><p>Зміщення на 2–5 см або зміна висоти на ±10-20 см змінюють фазу відбитих хвиль (λ ≈ 5.17 см). Якщо спостерігаються сильні коливання (&gt;2–3 dB), ваш вимірювальний майданчик має проблеми зі стоячими хвилями від підлоги або стін.</p></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-12"><h2>Метод порівняння A–B–A</h2><div class="flow"><div class="card"><h3>Вимір:</h3><p>Антена A</p></div><div class="card"><h3>Вимір:</h3><p>Антена B</p></div><div class="card"><h3>Повтор:</h3><p>Антена A</p></div></div><div class="note"><strong>Золоте правило:<br>Кабелі, калібрування, висота та відстань = НЕЗМІННІ</strong></div><div class="grid"><div><p><strong>Концепція:</strong> Вимірювання S21 має найвищу цінність саме для порівняння двох варіантів (наприклад, антена з корпусом і без нього, або антена X проти антени Y) в ідентичних умовах.</p></div><div><div class="note warning"><strong>Валідація кріплення:</strong> Після вимірювання B, обов'язково поверніть антену A. Якщо різниця між першим і другим вимірюванням A перевищує різницю між A і B, ваші механічні кріплення неточні. Результати порівняння недійсні.</div></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-13"><h2>Збереження результатів: Формат S2P</h2><div class="grid"><div><img src="images/save.jpg" alt="" loading="lazy"><pre># Hz  S DB R 50
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Вимірювання передачі антен (S21/S12)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f3f7f8;
+        color: #23313d;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 17px;
+        line-height: 1.65;
+      }
+      .guide {
+        max-width: 1120px;
+        margin: auto;
+        padding: 24px;
+      }
+      section {
+        background: white;
+        margin: 0 0 24px;
+        padding: 40px;
+        border: 1px solid #dbe7eb;
+        border-radius: 8px;
+      }
+      h2 {
+        font-size: 30px;
+        line-height: 1.25;
+        margin: 0 0 26px;
+        font-weight: 700;
+        letter-spacing: -0.6px;
+      }
+      section:first-child h2 {
+        font-size: 44px;
+        max-width: 800px;
+      }
+      h3 {
+        font-size: 20px;
+        line-height: 1.4;
+        margin: 0 0 12px;
+      }
+      p {
+        margin: 0 0 16px;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+        align-items: start;
+      }
+      #section-1 > .grid {
+        grid-template-columns: 1fr;
+      }
+      .note {
+        background: #f0fafb;
+        border: 1px solid #bae4e9;
+        border-left: 5px solid #28b7c8;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .warning {
+        background: #fff7ed;
+        border-color: #f0caa5;
+        border-left-color: #dc792e;
+      }
+      .warning strong,
+      .warning h3 {
+        color: #a54a10;
+      }
+      .card {
+        border: 1px solid #d1dde4;
+        background: #f7fafc;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+        gap: 16px;
+      }
+      .flow .card {
+        border-top: 4px solid #28b7c8;
+      }
+      .formula {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 21px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+      }
+      .emphasis {
+        text-align: center;
+        margin: 25px 0;
+        font-weight: bold;
+      }
+      mark {
+        background: #b5f0f2;
+        color: inherit;
+        padding: 4px 12px;
+      }
+      li {
+        margin: 0 0 12px;
+      }
+      ol,
+      ul {
+        padding-left: 25px;
+        margin-top: 0;
+      }
+      code,
+      pre {
+        font-family: Consolas, monospace;
+      }
+      code {
+        font-size: 13px;
+        overflow-wrap: anywhere;
+      }
+      pre {
+        font-size: 12px;
+        line-height: 1.8;
+        background: #f4f7f8;
+        padding: 15px;
+        overflow: auto;
+      }
+      .table-wrap {
+        overflow: auto;
+        margin: 24px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+      }
+      th,
+      td {
+        padding: 14px;
+        text-align: left;
+        border: 1px solid #d0dce2;
+      }
+      th {
+        background: #1c354d;
+        color: white;
+      }
+      td {
+        vertical-align: top;
+      }
+      .checklist td:first-child {
+        background: #fff0ef;
+      }
+      .checklist td:last-child {
+        background: #e9f9fa;
+      }
+      .credit {
+        text-align: right;
+        color: #7c8991;
+        font-size: 10px;
+        margin-top: 20px;
+      }
+      @media (max-width: 700px) {
+        .guide {
+          padding: 10px;
+        }
+        section {
+          padding: 22px 18px;
+          margin-bottom: 14px;
+        }
+        h2 {
+          font-size: 25px;
+        }
+        section:first-child h2 {
+          font-size: 32px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .formula {
+          font-size: 18px;
+        }
+        body {
+          font-size: 16px;
+        }
+        .checklist {
+          min-width: 520px;
+        }
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        .guide {
+          padding: 0;
+          max-width: none;
+        }
+        section {
+          break-inside: avoid;
+          border-radius: 0;
+        }
+        .credit {
+          color: #666;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="guide">
+      <section id="section-1">
+        <h2>Вимірювання передачі антен (S21/S12)</h2>
+        <div class="grid">
+          <div>
+            <p>
+              Практичний посібник для технічних спеціалістів з використанням
+              LiteVNA та Windows
+            </p>
+            <p><code>[ WORKED_EXAMPLE: 5.8 GHz ] | [ REVISION 4 ]</code></p>
+          </div>
+          <div><img src="images/cover.jpg" alt="" loading="lazy" /></div>
+        </div>
+        
+      </section>
+      <section id="section-2">
+        <h2>Що ми вимірюємо (і обмеження LiteVNA)</h2>
+        <div class="grid">
+          <div><img src="images/forward.jpg" alt="" loading="lazy" /></div>
+          <div><img src="images/reverse.jpg" alt="" loading="lazy" /></div>
+        </div>
+        <div class="note">
+          <strong>Концепція:</strong> S21 показує передачу всього радіоканалу у
+          вибраному напрямку, а не абсолютну ефективність антени.
+          <p>
+            <span class="formula">S21 (dB) = 20 log<sub>10</sub>|S21|.</span>
+          </p>
+        </div>
+        <div class="note warning">
+          <strong>Апаратне обмеження:</strong> LiteVNA має лише один змішувач
+          (Mixer) і не підтримує пряме цифрове вимірювання S12. Щоб виміряти
+          передачу у зворотному напрямку, необхідно фізично поміняти антени
+          місцями.
+        </div>
+        
+      </section>
+      <section id="section-3">
+        <h2>Апаратне забезпечення та безпека</h2>
+        <img src="images/equipment.jpg" alt="" loading="lazy" />
+        <h3>Програми для вимірювання та завантаження</h3>
+        <div class="flow">
+          <div class="card">
+            <h3>NanoVNA App</h3>
+            <p><strong>Сумісність:</strong> NanoVNA та LiteVNA: підтримку заявлено для збірки v1.1.215 на DEEPELEC. NanoVNA-H/H4 належать до сімейства V1; сумісність інших моделей залежить від збірки програми та прошивки. <a href="https://deepelec.com/support/" target="_blank" rel="noopener noreferrer">Джерело сумісності</a>.</p>
+            <p>Програма для Windows: керування розгорткою через USB, калібрування, відображення S11/S21 та збереження даних Touchstone. Використовуйте версію з підтримкою LiteVNA.</p>
+            <p><a href="https://deepelec.com/support/" target="_blank" rel="noopener noreferrer">Завантажити для Windows — розділ NanoVNA-App</a></p>
+            <p>На сторінці DEEPELEC є NanoVNA-App v1.1.215 із заявленою підтримкою LiteVNA.</p>
+          </div>
+          <div class="card">
+            <h3>NanoVNA-Saver</h3>
+            <p><strong>Сумісність:</strong> NanoVNA, NanoVNA-H, NanoVNA-H4, NanoVNA-F та LiteVNA прямо зазначені у списку сумісних приладів проєкту. Підтримку інших модифікацій перевіряйте окремо. <a href="https://github.com/NanoVNA-Saver/nanovna-saver#current-features" target="_blank" rel="noopener noreferrer">Джерело сумісності</a>.</p>
+            <p>Альтернатива з підтримкою LiteVNA: графіки S11/S21, усереднення, сегментовані вимірювання, порівняння з опорною трасою та імпорт/експорт Touchstone.</p>
+            <p><a href="https://github.com/NanoVNA-Saver/nanovna-saver/releases/latest" target="_blank" rel="noopener noreferrer">Завантажити NanoVNA-Saver — Releases</a></p>
+            <p><a href="https://github.com/NanoVNA-Saver/nanovna-saver" target="_blank" rel="noopener noreferrer">Опис та сумісні прилади</a></p>
+          </div>
+          <div class="card">
+            <h3>NanoVNA-QT</h3>
+            <p><strong>Сумісність:</strong> Сімейство NanoVNA V2, зокрема V2 Plus4, згідно зі списком апаратних версій розробника. Класичні NanoVNA-H/H4 (V1) та LiteVNA не входять до заявленої підтримки цього офіційного випуску. <a href="https://github.com/nanovna-v2/NanoVNA-QT/releases" target="_blank" rel="noopener noreferrer">Джерело сумісності</a>.</p>
+            <p>Аналог для приладів NanoVNA V2. <strong>Офіційна версія не підтримує LiteVNA</strong>; для цього посібника оберіть NanoVNA App або NanoVNA-Saver.</p>
+            <p><a href="https://nanorfe.com/nanovna-v2-software.html" target="_blank" rel="noopener noreferrer">Завантажити NanoVNA-QT для NanoVNA V2</a></p>
+            <p><a href="https://github.com/nanovna-v2/NanoVNA-QT/releases" target="_blank" rel="noopener noreferrer">Версії та умови сумісності</a></p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <div class="card">
+              <h3>□ Обладнання:</h3>
+              <ul>
+                <li>Ноутбук (Windows 11)</li>
+                <li>LiteVNA та USB-кабель</li>
+                <li>Неметалеві стійки та рулетка</li>
+              </ul>
+              <h3>□ ВЧ-компоненти:</h3>
+              <ul>
+                <li>Антени (напр., 5.8 GHz)</li>
+                <li>Два 50 Ω кабелі</li>
+                <li>Набір O-S-L та адаптер THRU</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <div class="note warning">
+              <h3>КРИТИЧНО ДЛЯ БЕЗПЕКИ:</h3>
+              <p>
+                <strong>НІКОЛИ</strong> не підключайте працюючий передавач або
+                підсилювач до LiteVNA. Тільки
+                <strong>пасивні антени.</strong> Уважно перевіряйте роз’єми (SMA
+                vs RP-SMA). Різьба та центральний контакт повинні збігатися.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-4">
+        <h2>Підключення до Windows: NanoVNA App</h2>
+        <div class="grid">
+          <div><img src="images/app.jpg" alt="" loading="lazy" /></div>
+          <div>
+            <ol>
+              <li>
+                COM Port: Знайдіть порт USB CDC та натисніть Connect. Якщо порт
+                зайнятий, закрийте інші програми.
+              </li>
+              <li>
+                Sweep Range: Введіть значення Start та Stop навколо робочої
+                частоти.
+              </li>
+              <li>
+                Trace Selection: Виберіть графік S21 LogMag для передачі та S11
+                LogMag для відображення.
+              </li>
+              <li>
+                Calibration: Розташування меню калібрування (використовуйте
+                тільки після налаштування діапазону).
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="note">
+          Порада: Не замінюйте драйвер USB Serial CDC на WinUSB наосліп у
+          Windows 11.
+        </div>
+        
+      </section>
+      <section id="section-5">
+        <h2>Налаштування розгортки (Sweep) та крок частоти</h2>
+        <div class="flow">
+          <div class="card">
+            <h3>Вхідні дані:</h3>
+            <p>Start: 5.5 GHz | Stop: 6.1 GHz | Points: 201</p>
+          </div>
+          <div class="card"><h3>Математична обробка</h3></div>
+          <div class="card">
+            <h3>Результат</h3>
+            <p>Крок Δf = 3 MHz</p>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Інженерна математика</h3>
+          <div class="formula">
+            Δf = (fStop - fStart) / (N - 1)<br />Δf = (6100 - 5500) / (201 -
+            1)<br />Δf = 3 MHz
+          </div>
+        </div>
+        <div class="grid">
+          <div>
+            <p>
+              <strong>Діапазон:</strong> Встановіть розгортку навколо робочої
+              частоти (напр., 5.8 GHz). Більша кількість точок зменшує крок, але
+              не гарантує кращої загальної точності.
+            </p>
+          </div>
+          <div>
+            <p>
+              <strong>Усереднення (Averaging):</strong> Використовуйте 4–8
+              циклів усереднення для зменшення випадкових шумів.
+              <strong>Увага:</strong> це не усуває статичні відбиття від стін чи
+              підлоги.
+            </p>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-6">
+        <h2>Логіка калібрування: Уникнення подвійної корекції</h2>
+        <div class="grid">
+          <div>
+            <div class="card">
+              <h3>НЕПРАВИЛЬНО</h3>
+              <img src="images/wrong.jpg" alt="" loading="lazy" />
+              <p>
+                <strong>Апаратне калібрування:</strong> Дійсне лише для
+                автономного використання приладу без ПК.
+              </p>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <h3>ПРАВИЛЬНО</h3>
+              <img src="images/right.jpg" alt="" loading="lazy" />
+              <p>
+                <strong>Програмне калібрування (PC Workflow):</strong> Програма
+                керує вимірюванням і зберігає власну корекцію.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="note warning">
+          <strong>ЗОЛОТЕ ПРАВИЛО:</strong> Не застосовуйте
+          <strong>корекцію двічі!</strong> Перед калібруванням у Windows App
+          обов’язково скиньте апаратне калібрування на самому LiteVNA (CAL -&gt;
+          RESET).
+        </div>
+        
+      </section>
+      <section id="section-7">
+        <h2>Покрокове калібрування кабелів (O-S-L-I-T)</h2>
+        <div class="grid">
+          <div><img src="images/calibration.jpg" alt="" loading="lazy" /></div>
+          <div>
+            <ol>
+              <li>
+                <strong>OPEN, SHORT, LOAD:</strong> Підключіть стандарти по
+                черзі до кінця кабелю PORT 1 (TX).
+              </li>
+              <li>
+                <strong>ISOLN:</strong> Підключіть 50 Ω навантаження до обох
+                кабелів окремо. Не з’єднуйте їх!
+              </li>
+              <li>
+                <strong>THRU:</strong> З’єднайте обидва кінці кабелів за
+                допомогою короткого адаптера.
+              </li>
+            </ol>
+            <div class="note warning">
+              <h3>Валідація після калібрування:</h3>
+              <ul>
+                <li>Графік THRU (S21) має бути близько 0 dB (±0.5 dB).</li>
+                <li>
+                  Графік LOAD (S11) має бути &lt;-20 dB на робочій частоті.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-8">
+        <h2>Фізичне розміщення та 'Дальня зона' (Far-Field)</h2>
+        <div class="grid">
+          <div><img src="images/placement.jpg" alt="" loading="lazy" /></div>
+          <div>
+            <p>
+              <strong>Вирівнювання:</strong><br />Спрямуйте відкритий кінець
+              Helix у центр Cloverleaf. Вирівняйте поляризацію та звільніть зону
+              Френеля від людей та металу.
+            </p>
+            <div class="card">
+              <h3>Engineer's Math</h3>
+              <div class="formula">
+                λ = c / f = 299792458 / (5.8 × 10<sup>9</sup>) = 0.0516 m
+              </div>
+              <p>
+                Оцінка: <span class="formula">R ≥ 2D<sup>2</sup> / λ</span>
+              </p>
+              <p>Якщо D = 0.18 m (максимальний розмір антени):</p>
+              <div class="formula">
+                R ≥ 2(0.18)<sup>2</sup> / 0.0516 ≈ 1.25 m
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="note warning">
+          <strong>Примітка:</strong> Початкова відстань 2.0 м задовольняє умову
+          R &gt; 1.25 м. Це гарантує планарність хвилі, але НЕ усуває фізичні
+          відбиття від стін.
+        </div>
+        
+      </section>
+      <section id="section-9">
+        <h2>Виконання вимірювання</h2>
+        <div class="flow">
+          <div class="card">
+            <h3>1. Connect</h3>
+            <p>
+              Підключіть PORT 1 до передавальної антени, PORT 2 до приймальної.
+            </p>
+          </div>
+          <div class="card">
+            <h3>2. Live Sweep</h3>
+            <p>
+              Запустіть безперервну розгортку. Знайдіть максимум S21 за
+              допомогою мікро-налаштувань кута антени.
+            </p>
+          </div>
+          <div class="card">
+            <h3>3. Lock &amp; Clear</h3>
+            <p>Зафіксуйте стійки.</p>
+            <p>
+              <strong
+                >ВІДІЙДІТЬ від зони вимірювання. Ваше тіло критично впливає на
+                S21.</strong
+              >
+            </p>
+          </div>
+          <div class="card">
+            <h3>4. Record</h3>
+            <p>Запишіть значення S21 та S11 на 5.8 GHz. Збережіть графік.</p>
+          </div>
+        </div>
+        <div class="note">
+          <strong>Відтворюваність:</strong> Зробіть щонайменше 3 проходи без
+          змін. Потім зніміть і встановіть антену знову, щоб перевірити точність
+          механічного кріплення.
+        </div>
+        
+      </section>
+      <section id="section-10">
+        <h2>Перевірка фону (Background Reality Check)</h2>
+        <img src="images/background.jpg" alt="" loading="lazy" />
+        <div class="formula emphasis">
+          S21 (Signal) - S21 (Background) = Margin (Запас)<br /><mark
+            >Target ≥ 20 dB</mark
+          >
+        </div>
+        <div class="grid">
+          <div>
+            <p>
+              <strong>Мета:</strong> Визначає, наскільки сигнал перевищує рівень
+              шуму приладу та небажаних витоків.
+            </p>
+            <p>
+              <strong>Приклад:</strong> Сигнал -38 dB, Фон -65 dB = Запас 27 dB.
+            </p>
+          </div>
+          <div>
+            <div class="note warning">
+              <strong
+                >КРИТИЧНО: НІКОЛИ не віднімайте значення фону (в dB) від вашого
+                вимірювання як математичну корекцію! Цей тест використовується
+                виключно для перевірки достатності запасу сигналу.</strong
+              >
+            </div>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-11">
+        <h2>Діагностика середовища: Багатопроменеве поширення</h2>
+        <div class="grid">
+          <div><img src="images/multipath.jpg" alt="" loading="lazy" /></div>
+          <div>
+            <h3>Математика зсуву відстані:</h3>
+            <div class="formula">
+              ΔS = −20 log<sub>10</sub>(r<sub>2</sub> / r<sub>1</sub>)
+            </div>
+            <ul>
+              <li>
+                <strong>Приклад:</strong> Відносно 2.0 м очікуйте зміну +0.92 dB
+                на відстані 1.8 м, та -0.83 dB на відстані 2.2 м.
+              </li>
+            </ul>
+            <h3>Мікро-зсуви (Діагностика фази):</h3>
+            <p>
+              Зміщення на 2–5 см або зміна висоти на ±10-20 см змінюють фазу
+              відбитих хвиль (λ ≈ 5.17 см). Якщо спостерігаються сильні
+              коливання (&gt;2–3 dB), ваш вимірювальний майданчик має проблеми
+              зі стоячими хвилями від підлоги або стін.
+            </p>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-12">
+        <h2>Метод порівняння A–B–A</h2>
+        <div class="flow">
+          <div class="card">
+            <h3>Вимір:</h3>
+            <p>Антена A</p>
+          </div>
+          <div class="card">
+            <h3>Вимір:</h3>
+            <p>Антена B</p>
+          </div>
+          <div class="card">
+            <h3>Повтор:</h3>
+            <p>Антена A</p>
+          </div>
+        </div>
+        <div class="note">
+          <strong
+            >Золоте правило:<br />Кабелі, калібрування, висота та відстань =
+            НЕЗМІННІ</strong
+          >
+        </div>
+        <div class="grid">
+          <div>
+            <p>
+              <strong>Концепція:</strong> Вимірювання S21 має найвищу цінність
+              саме для порівняння двох варіантів (наприклад, антена з корпусом і
+              без нього, або антена X проти антени Y) в ідентичних умовах.
+            </p>
+          </div>
+          <div>
+            <div class="note warning">
+              <strong>Валідація кріплення:</strong> Після вимірювання B,
+              обов'язково поверніть антену A. Якщо різниця між першим і другим
+              вимірюванням A перевищує різницю між A і B, ваші механічні
+              кріплення неточні. Результати порівняння недійсні.
+            </div>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-13">
+        <h2>Збереження результатів: Формат S2P</h2>
+        <div class="grid">
+          <div>
+            <img src="images/save.jpg" alt="" loading="lazy" />
+            <pre>
+# Hz  S DB R 50
 #      S11 S11 S21  S21   S12 S12 S22
 100000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0
 100000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0
@@ -29,8 +629,119 @@
 800000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0
 900000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0
 300000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0
-110000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0</pre></div><div><div class="card"><h3>Процедура збереження:</h3><p>Зупиніть розгортку, натисніть <strong>Save S2P</strong> на верхній панелі. Формат Touchstone є стандартним текстовим форматом. Зберігайте файли для подальшого аналізу (скріншоти не дозволяють накладати графіки пізніше).</p></div><div class="note warning"><h3>Важливе застереження щодо S2P:</h3><p>Файл має колонки для всіх 4-х S-параметрів (S11, S21, S12, S22). Однак, оскільки LiteVNA не має зворотного апаратного забезпечення, наявність файлу не доводить вимірювання S12. Ці поля будуть порожніми або заповненими симульованими нулями.</p></div></div></div><div class="credit">Gemini Notebook</div></section>
-<section id="section-14"><h2>Журнал вимірювань (Measurement Log)</h2><p>Без правильних метаданих результати неможливо відтворити.</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>Variant</th><th>Freq</th><th>Dist</th><th>Height</th><th>S21 (dB)</th><th>Bgnd (dB)</th><th>File</th></tr></thead><tbody><tr><td>2026-10-04</td><td>H01_A</td><td>5.8 GHz</td><td>2.0 m</td><td>1.8 m</td><td>-38.0</td><td>-65.0</td><td>H01_A_r2m_run01.s2p</td></tr></tbody></table></div><div class="note"><strong>Доказ наукової чистоти:</strong> Обов’язково фіксуйте дистанцію, висоту та фон. Ці змінні є критичними для доведення того, що зміни в S21 викликані антеною, а не зміщенням геометрії середовища.</div><div class="credit">Gemini Notebook</div></section>
-<section id="section-15"><h2>Практичний чек-лист та типові помилки</h2><div class="table-wrap"><table class="checklist"><thead><tr><th>✕ Типова помилка</th><th>✓ Правильна дія</th></tr></thead><tbody><tr><td>Подвійне калібрування (Прилад + ПК ПК одночасно).</td><td>Скинути налаштування LiteVNA (RESET), калібрувати тільки у Windows App.</td></tr><tr><td>Вважати, що LiteVNA вимірює S12 програмно.</td><td>Фізично поміняти антени на портах TX/RX для перевірки зворотної передачі.</td></tr><tr><td>Математично віднімати фонові dB від результату.</td><td>Використовувати фон ТІЛЬКИ для перевірки запасу (Margin &gt; 20 dB).</td></tr><tr><td>Знаходитися в зоні Френеля під час тесту.</td><td>Зафіксувати стійки і відійти на кілька метрів від установки.</td></tr><tr><td>Робити гучні висновки з одного вимірювання.</td><td>Використовувати послідовність A–B–A та мікро-зсуви на ±2-5 см.</td></tr></tbody></table></div><div class="credit">Gemini Notebook</div></section>
-</main>
-</body></html>
+110000 1.0 0.0 0.9 -180.0 0.0 0.0 0.0</pre
+            >
+          </div>
+          <div>
+            <div class="card">
+              <h3>Процедура збереження:</h3>
+              <p>
+                Зупиніть розгортку, натисніть <strong>Save S2P</strong> на
+                верхній панелі. Формат Touchstone є стандартним текстовим
+                форматом. Зберігайте файли для подальшого аналізу (скріншоти не
+                дозволяють накладати графіки пізніше).
+              </p>
+            </div>
+            <div class="note warning">
+              <h3>Важливе застереження щодо S2P:</h3>
+              <p>
+                Файл має колонки для всіх 4-х S-параметрів (S11, S21, S12, S22).
+                Однак, оскільки LiteVNA не має зворотного апаратного
+                забезпечення, наявність файлу не доводить вимірювання S12. Ці
+                поля будуть порожніми або заповненими симульованими нулями.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+      </section>
+      <section id="section-14">
+        <h2>Журнал вимірювань (Measurement Log)</h2>
+        <p>Без правильних метаданих результати неможливо відтворити.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Variant</th>
+                <th>Freq</th>
+                <th>Dist</th>
+                <th>Height</th>
+                <th>S21 (dB)</th>
+                <th>Bgnd (dB)</th>
+                <th>File</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-10-04</td>
+                <td>H01_A</td>
+                <td>5.8 GHz</td>
+                <td>2.0 m</td>
+                <td>1.8 m</td>
+                <td>-38.0</td>
+                <td>-65.0</td>
+                <td>H01_A_r2m_run01.s2p</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note">
+          <strong>Доказ наукової чистоти:</strong> Обов’язково фіксуйте
+          дистанцію, висоту та фон. Ці змінні є критичними для доведення того,
+          що зміни в S21 викликані антеною, а не зміщенням геометрії середовища.
+        </div>
+        
+      </section>
+      <section id="section-15">
+        <h2>Практичний чек-лист та типові помилки</h2>
+        <div class="table-wrap">
+          <table class="checklist">
+            <thead>
+              <tr>
+                <th>✕ Типова помилка</th>
+                <th>✓ Правильна дія</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Подвійне калібрування (Прилад + ПК ПК одночасно).</td>
+                <td>
+                  Скинути налаштування LiteVNA (RESET), калібрувати тільки у
+                  Windows App.
+                </td>
+              </tr>
+              <tr>
+                <td>Вважати, що LiteVNA вимірює S12 програмно.</td>
+                <td>
+                  Фізично поміняти антени на портах TX/RX для перевірки
+                  зворотної передачі.
+                </td>
+              </tr>
+              <tr>
+                <td>Математично віднімати фонові dB від результату.</td>
+                <td>
+                  Використовувати фон ТІЛЬКИ для перевірки запасу (Margin &gt;
+                  20 dB).
+                </td>
+              </tr>
+              <tr>
+                <td>Знаходитися в зоні Френеля під час тесту.</td>
+                <td>
+                  Зафіксувати стійки і відійти на кілька метрів від установки.
+                </td>
+              </tr>
+              <tr>
+                <td>Робити гучні висновки з одного вимірювання.</td>
+                <td>
+                  Використовувати послідовність A–B–A та мікро-зсуви на ±2-5 см.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+      </section>
+    </main>
+  </body>
+</html>

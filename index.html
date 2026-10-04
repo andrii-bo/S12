@@ -60,7 +60,8 @@
         gap: 26px;
         align-items: start;
       }
-      #section-1 > .grid {
+      #section-1 > .grid,
+      #section-4 > .grid {
         grid-template-columns: 1fr;
       }
       .note {
@@ -234,12 +235,36 @@
           <div><img src="images/forward.jpg" alt="" loading="lazy" /></div>
           <div><img src="images/reverse.jpg" alt="" loading="lazy" /></div>
         </div>
+        <h3>Розуміння вимірювання S21</h3>
         <div class="note">
-          <strong>Концепція:</strong> S21 показує передачу всього радіоканалу у
-          вибраному напрямку, а не абсолютну ефективність антени.
-          <p>
+          <strong>S21 (Transmission)</strong> — це передача радіосигналу від
+          <strong>PORT 1 (Tx)</strong> до <strong>PORT 2 (Rx)</strong>.
+        </div>
+        <div class="grid">
+          <div class="card">
+            <h3>Що показує S21</h3>
+            <ul>
+              <li>Передачу всього радіоканалу в одному вибраному напрямку.</li>
+              <li>Сумарний вплив обох антен та середовища між ними.</li>
+            </ul>
+          </div>
+          <div class="note warning" style="margin-top: 0">
+            <h3>Чого НЕ показує S21</h3>
+            <ul>
+              <li>Абсолютну ефективність окремої антени.</li>
+              <li>Точний абсолютний gain (підсилення) без складної еталонної калібровки.</li>
+              <li>Втрати в конструкції кріплення окремо.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note">
+          <h3>Логарифмічна шкала</h3>
+          <p>S21 вимірюється у dB:
             <span class="formula">S21 (dB) = 20 log<sub>10</sub>|S21|.</span>
           </p>
+          <p>Значення <strong>−35 dB</strong> означає сильнішу передачу, ніж
+            <strong>−40 dB</strong>. Різниця <strong>+1 dB</strong> — збільшення
+            прийнятої потужності приблизно у <strong>1,26 раза</strong>.</p>
         </div>
         <div class="note warning">
           <strong>Апаратне обмеження:</strong> LiteVNA має лише один змішувач
@@ -277,6 +302,25 @@
           </div>
         </div>
 
+
+        <h3>Порівняння трьох програм</h3>
+        <div class="table-wrap">
+          <table class="software-comparison" style="min-width: 740px" aria-label="Порівняння програм NanoVNA">
+            <thead><tr><th scope="col">Критерій</th><th scope="col">NanoVNA App</th><th scope="col">NanoVNA-Saver</th><th scope="col">NanoVNA-QT</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Операційні системи</th><td>Windows</td><td>Windows, Linux, macOS (спосіб встановлення залежить від ОС)</td><td>Windows, Linux, macOS</td></tr>
+              <tr><th scope="row">Підтримка NanoVNA</th><td>NanoVNA; інші модифікації — за сумісністю збірки та прошивки</td><td>NanoVNA, H, H4, F прямо зазначені розробниками</td><td>Сімейство NanoVNA V2; H/H4 (V1) не входять до заявленої підтримки</td></tr>
+              <tr><th scope="row">Підтримка LiteVNA</th><td>Так, заявлена для v1.1.215 на DEEPELEC</td><td>Так, прямо зазначена у списку сумісних приладів</td><td>Ні, офіційний випуск не підтримує LiteVNA</td></tr>
+              <tr><th scope="row">Вимірювання та графіки</th><td>Керування розгорткою, графіки S11/S21</td><td>S11/S21, Smith, амплітуда, фаза, КСХ; маркери та опорна траса</td><td>S11/S21, Smith, фаза, полярний графік, КСХ</td></tr>
+              <tr><th scope="row">Калібрування через ПК</th><td>Так</td><td>Так</td><td>Так</td></tr>
+              <tr><th scope="row">Особливості</th><td>Керування вимірюваннями через USB у Windows</td><td>Сегментовані розгортки, усереднення, TDR, порівняння трас</td><td>Інтерфейс на Qt для приладів NanoVNA V2</td></tr>
+              <tr><th scope="row">Файли вимірювань</th><td>Збереження Touchstone</td><td>Імпорт та експорт Touchstone; експорт зображень графіків</td><td>Експорт Touchstone та CSV</td></tr>
+              <tr><th scope="row">Завантаження</th><td><a href="https://deepelec.com/support/" target="_blank" rel="noopener noreferrer">DEEPELEC — NanoVNA-App</a></td><td><a href="https://github.com/NanoVNA-Saver/nanovna-saver/releases/latest" target="_blank" rel="noopener noreferrer">NanoVNA-Saver Releases</a></td><td><a href="https://nanorfe.com/nanovna-software.html" target="_blank" rel="noopener noreferrer">NanoVNA-QT</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Для LiteVNA у цьому посібнику підходять NanoVNA App зі збіркою, що підтримує LiteVNA, або NanoVNA-Saver. Назва NanoVNA охоплює різні апаратні сімейства: підтримка V1 не означає підтримку V2 і навпаки</p>
+
         <div class="grid">
           <div>
             <div class="card">
@@ -311,7 +355,7 @@
       <section id="section-4">
         <h2>Підключення до Windows: NanoVNA App</h2>
         <div class="grid">
-          <div><img src="images/app.jpg" alt="" loading="lazy" /></div>
+          <div><a href="images/app.png" target="_blank" rel="noopener" title="Відкрити зображення в повному розмірі"><img src="images/app.png" alt="Інтерфейс NanoVNA App: COM Port, діапазон частот, графіки S11/S21 і меню калібрування" loading="lazy" /></a></div>
           <div>
             <ol>
               <li>
@@ -426,7 +470,7 @@
               </li>
               <li>
                 <strong>THRU:</strong> З’єднайте обидва кінці кабелів за
-                допомогою короткого адаптера.
+                допомогою адаптера. В данному випадку SMA-MAIL->SMA-MAIL типу "бочечка"
               </li>
             </ol>
             <div class="note warning">
@@ -448,9 +492,8 @@
           <div><img src="images/placement.jpg" alt="" loading="lazy" /></div>
           <div>
             <p>
-              <strong>Вирівнювання:</strong><br />Спрямуйте відкритий кінець
-              Helix у центр Cloverleaf. Вирівняйте поляризацію та звільніть зону
-              Френеля від людей та металу.
+              <strong>Вирівнювання та Юстування:</strong><br />Спрямуйте відкритий кінець
+              Helix у центр Cloverleaf для отримання максимального підсилення. Якщо замість Cloverleaf використовуєте направлену антену, напрямок антен має дивитись одна на одну для максимума підсилення.  Вирівняйте поляризацію та звільніть зону  Френеля від людей та металу. 
             </p>
             <div class="card">
               <h3>Engineer's Math</h3>
@@ -467,12 +510,33 @@
             </div>
           </div>
         </div>
-        <div class="note warning">
-          <strong>Примітка:</strong> Початкова відстань 2.0 м задовольняє умову
-          R &gt; 1.25 м. Це гарантує планарність хвилі, але НЕ усуває фізичні
-          відбиття від стін.
+        <div class="note">
+          <h3>Навіщо потрібна дальня зона</h3>
+          <p>За достатньої відстані фронт електромагнітної хвилі можна вважати
+            приблизно плоским у межах приймальної антени. Це наближення плоскої
+            хвилі, потрібне для застосування формули Фріса та оцінювання підсилення.</p>
+          <p>Умова <span class="formula">R ≥ 2D<sup>2</sup> / λ</span> —
+            орієнтир, а не гарантія відсутності похибки. Перевіряйте її для обох
+            антен; для електрично малих антен також потрібна відстань, значно
+            більша за довжину хвилі та розмір антени.</p>
         </div>
-        
+        <div class="note warning">
+          <h3>Похибка підсилення при недостатній відстані</h3>
+          <p>Якщо антени розміщені поза дальньою зоною або поблизу її межі,
+            кривизна фронту хвилі може спотворювати оцінку підсилення. Для
+            сильноспрямованих антен із великою апертурою оцінене підсилення може
+            бути заниженим. Величина та напрям похибки залежать від антен і
+            геометрії вимірювання; вона не обов’язково буде малою.</p>
+          <p>Для наведеного прикладу відстань <strong>2,0 м</strong> перевищує
+            розрахункові <strong>1,25 м</strong>, але не усуває відбиття від стін
+            та інших предметів. Перевірте результат на кількох більших відстанях,
+            враховуючи зміну втрат поширення за формулою Фріса: саме S21 з
+            відстанню зменшується, навіть коли підсилення антен незмінне.</p>
+          <p>S21 саме по собі не є абсолютним підсиленням окремої антени:
+            потрібні еталонна антена або інший калібрований метод, а також
+            урахування втрат, узгодження та поляризації.</p>
+        </div>
+        <p><a href="https://www.nist.gov/publications/accurate-gain-measurement-technique-limited-antenna-separations" target="_blank" rel="noopener noreferrer">Джерело: NIST — вимірювання підсилення при обмеженій відстані між антенами</a></p>
       </section>
       <section id="section-9">
         <h2>Виконання вимірювання</h2>
